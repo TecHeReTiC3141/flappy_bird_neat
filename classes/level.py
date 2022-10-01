@@ -5,7 +5,8 @@ from scripts.const import *
 
 class Level:
 
-    background_img = pygame.transform.scale(pygame.image.load('sprites/background-day.png'), (DISP_WIDTH, DISP_HEIGHT))
+    background_img = pygame.transform.scale(pygame.image.load('sprites/background-day.png'),
+                                            (DISP_WIDTH, DISP_HEIGHT))
 
     def __init__(self):
         self.bird = Bird(DISP_WIDTH // 2, DISP_HEIGHT // 2)
@@ -45,10 +46,25 @@ class Level:
                     self.bird.jump()
 
         self.bird.update()
+
         for obj in self.grounds + self.pipes:
             obj.update(self.bird.velocity.x)
-            if obj.interact(self.bird):
-                self.reload()
+            if isinstance(obj, Pipe):
+                new_pipe, collided = obj.interact(self.bird)
+                if collided:
+                    self.reload()
+                elif isinstance(new_pipe, Pipe):
+                    self.pipes.append(new_pipe)
+            else:
+                if obj.interact(self.bird):
+                    self.reload()
+
         if self.grounds[0].rect.right <= 0:
             self.grounds[0].rect.left = DISP_WIDTH - 20
             self.grounds.append(self.grounds.popleft())
+
+        if self.pipes and self.pipes[0].upper_pipe.rect.right <= 0:
+            self.pipes.popleft()
+
+        if self.bird.dist >= 100 and not self.pipes:
+            self.pipes.append(Pipe(DISP_WIDTH + randint(50, 150), randint(DISP_HEIGHT // 3, DISP_HEIGHT // 2)))

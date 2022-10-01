@@ -1,4 +1,3 @@
-from math import *
 from scripts.const import *
 
 
@@ -17,11 +16,13 @@ class Bird:
             img.set_colorkey('black')
         self.rect = self.images[0].get_rect(center=(x, y))
         self.anim_tick = 0
+        self.dist = 0
         self.velocity = pygame.math.Vector2(self.speed, 0)
         self.acceleration = pygame.math.Vector2(0, self.falling_momentum)
 
     def update(self):
         self.anim_tick += 1
+        self.dist += self.velocity.x
         self.rect.move_ip((0, self.velocity.y))
         self.velocity.y = min(self.velocity.y + self.acceleration.y, self.speed * .9)
         self.velocity.x = sqrt(self.speed ** 2 - self.velocity.y ** 2)

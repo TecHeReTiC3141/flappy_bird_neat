@@ -1,6 +1,6 @@
 import pygame
-import random
-import math
+from random import *
+from math import *
 
 DISP_WIDTH, DISP_HEIGHT = 600, 800
 display = pygame.display.set_mode((10, 10))
