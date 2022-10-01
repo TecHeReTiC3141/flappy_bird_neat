@@ -1,5 +1,6 @@
-import pygame
 from math import *
+from scripts.const import *
+
 
 class Bird:
 
@@ -7,7 +8,8 @@ class Bird:
     speed = 10
     jump_strength = -speed * 3 / 4
     images = [
-        pygame.transform.scale2x(pygame.image.load(f'sprites/redbird-{i}flap.png')) for i in ['down', 'mid', 'up']
+        pygame.transform.scale2x(pygame.image.load(f'sprites/redbird-{i}flap.png').convert_alpha())
+        for i in ['down', 'mid', 'up']
     ]
 
     def __init__(self, x, y):
@@ -29,9 +31,9 @@ class Bird:
         if self.velocity.y > 0:
             angle = 360 - angle
         rotated_surf = pygame.transform.rotate(self.images[self.anim_tick % 6 // 2], angle)
+        rotated_surf.set_colorkey('black')
         surface.blit(rotated_surf, self.rect)
 
     def jump(self):
-        print('jump')
         self.velocity.y = self.jump_strength
         self.velocity.x = sqrt(self.speed ** 2 - self.velocity.y ** 2)
