@@ -1,5 +1,3 @@
-import pygame
-from scripts.const import *
 from classes.level import *
 
 display = pygame.display.set_mode((DISP_WIDTH, DISP_HEIGHT))
@@ -11,6 +9,7 @@ clock = pygame.time.Clock()
 while True:
 
     level.draw(display)
+
     level.game_cycle()
     pygame.display.update()
 

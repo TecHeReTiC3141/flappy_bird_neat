@@ -14,7 +14,7 @@ class Level:
         self.grounds = deque([Ground(0, GROUND_LEVEL, DISP_WIDTH, DISP_HEIGHT - GROUND_LEVEL),
                               Ground(DISP_WIDTH, GROUND_LEVEL, DISP_WIDTH, DISP_HEIGHT - GROUND_LEVEL)])
         self.surface = pygame.Surface((DISP_WIDTH, DISP_HEIGHT))
-        self.surface.set_colorkey('black')
+        self.game_over = False
 
     def draw(self, surface: pygame.Surface):
         self.surface.fill('black')
@@ -24,6 +24,8 @@ class Level:
         for ground in self.grounds:
             ground.draw(self.surface)
         self.bird.draw(self.surface)
+        if self.game_over:
+            self.surface.blit(LEVEL_FONT.render("R", True, 'black'), (DISP_WIDTH // 2, DISP_HEIGHT // 4))
         surface.blit(self.surface, (0, 0))
 
     def reload(self):
@@ -32,7 +34,7 @@ class Level:
         self.grounds = deque([Ground(0, GROUND_LEVEL, DISP_WIDTH, DISP_HEIGHT - GROUND_LEVEL),
                               Ground(DISP_WIDTH, GROUND_LEVEL, DISP_WIDTH, DISP_HEIGHT - GROUND_LEVEL)])
         self.surface = pygame.Surface((DISP_WIDTH, DISP_HEIGHT))
-        self.surface.set_colorkey('black')
+        self.game_over = False
 
     def game_cycle(self):
 
@@ -42,29 +44,35 @@ class Level:
                 quit()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if not self.game_over and event.key == pygame.K_SPACE:
                     self.bird.jump()
 
-        self.bird.update()
-
-        for obj in self.grounds + self.pipes:
-            obj.update(self.bird.velocity.x)
-            if isinstance(obj, Pipe):
-                new_pipe, collided = obj.interact(self.bird)
-                if collided:
-                    self.reload()
-                elif isinstance(new_pipe, Pipe):
-                    self.pipes.append(new_pipe)
-            else:
-                if obj.interact(self.bird):
+                elif event.key == pygame.K_r and self.game_over:
                     self.reload()
 
-        if self.grounds[0].rect.right <= 0:
-            self.grounds[0].rect.left = DISP_WIDTH - 20
-            self.grounds.append(self.grounds.popleft())
+        if not self.game_over:
+            self.bird.update()
 
-        if self.pipes and self.pipes[0].upper_pipe.rect.right <= 0:
-            self.pipes.popleft()
+            for obj in self.grounds + self.pipes:
+                obj.update(self.bird.velocity.x)
+                if isinstance(obj, Pipe):
+                    new_pipe, collided = obj.interact(self.bird)
+                    if collided:
+                        self.game_over = True
+                        break
+                    elif isinstance(new_pipe, Pipe):
+                        self.pipes.append(new_pipe)
+                else:
+                    if obj.interact(self.bird):
+                        self.game_over = True
+                        break
 
-        if self.bird.dist >= 100 and not self.pipes:
-            self.pipes.append(Pipe(DISP_WIDTH + randint(50, 150), randint(DISP_HEIGHT // 3, DISP_HEIGHT // 2)))
+            if self.grounds[0].rect.right <= 0:
+                self.grounds[0].rect.left = DISP_WIDTH - 20
+                self.grounds.append(self.grounds.popleft())
+
+            if self.pipes and self.pipes[0].upper_pipe.rect.right <= 0:
+                self.pipes.popleft()
+
+            if self.bird.dist >= 150 and not self.pipes:
+                self.pipes.append(Pipe(DISP_WIDTH + randint(50, 150), randint(DISP_HEIGHT // 4, DISP_HEIGHT // 2)))

@@ -10,12 +10,18 @@ class GameObject:
         self.image = pygame.transform.scale(self.image, (width, height))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.alive = True
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, speed):
         self.rect.move_ip(-speed, 0)
 
-    def interact(self, player: Bird):
-        return self.rect.colliderect(player.rect)
+    def interact(self, player: Bird) -> bool:
+        if self.rect.colliderect(player.rect):
+            offset = (player.rect.x - self.rect.x, player.rect.y - self.rect.y)
+            over = self.mask.overlap_area(player.mask, offset)
+            print(over)
+            return over > 0
+        return False
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.image, self.rect)
@@ -52,9 +58,8 @@ class Pipe(GameObject):
         new_pipe: Pipe = None
         if not self.passed and player.rect.centerx >= self.upper_pipe.rect.centerx:
             self.passed = True
-            print(self.passed)
             new_pipe = Pipe(DISP_WIDTH + randint(50, 150), randint(DISP_HEIGHT // 3, DISP_HEIGHT // 2))
-        return (new_pipe, self.upper_pipe.interact(player) \
+        return (new_pipe, self.upper_pipe.interact(player)
                 or self.lower_pipe.interact(player))
 
 
