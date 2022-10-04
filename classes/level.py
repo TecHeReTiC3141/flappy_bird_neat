@@ -26,7 +26,7 @@ class Level:
         self.bird.draw(self.surface)
         if self.game_over:
             self.surface.blit(LEVEL_FONT.render("R", True, 'black'), (DISP_WIDTH // 2, DISP_HEIGHT // 4))
-        self.surface.blit(LEVEL_FONT.render(f"DIST: {self.bird.dist // HOR_SPEED}", True, 'black'), (10, DISP_HEIGHT // 5))
+        self.surface.blit(LEVEL_FONT.render(f"DIST: {self.bird.fit // HOR_SPEED}", True, 'black'), (10, DISP_HEIGHT // 5))
 
         surface.blit(self.surface, (0, 0))
 
@@ -76,5 +76,5 @@ class Level:
             if self.pipes and self.pipes[0].upper_pipe.rect.right <= 0:
                 self.pipes.popleft()
 
-            if self.bird.dist >= 150 and not self.pipes:
+            if self.bird.fit >= 150 and not self.pipes:
                 self.pipes.append(Pipe(DISP_WIDTH + randint(20, 150), randint(DISP_HEIGHT // 4, DISP_HEIGHT // 2)))
