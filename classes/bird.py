@@ -4,7 +4,7 @@ from scripts.const import *
 class Bird:
 
     falling_momentum = .25
-    speed = 10
+    speed = 8
     jump_strength = -speed * 3 / 4
     images = [
         pygame.transform.scale2x(pygame.image.load(f'sprites/redbird-{i}flap.png').convert_alpha())
@@ -23,7 +23,7 @@ class Bird:
 
     def update(self):
         self.anim_tick += 1
-        self.dist += self.velocity.x
+        self.dist += HOR_SPEED
         self.rect.move_ip((0, self.velocity.y))
         self.velocity.y = min(self.velocity.y + self.acceleration.y, self.speed * .9)
         self.velocity.x = sqrt(self.speed ** 2 - self.velocity.y ** 2)
@@ -32,7 +32,8 @@ class Bird:
         angle = degrees(acos(self.velocity.x / self.speed))
         if self.velocity.y > 0:
             angle = 360 - angle
-        rotated_surf = pygame.transform.rotate(self.images[self.anim_tick % 6 // 2], angle)
+        rotated_surf = pygame.transform.rotate(self.images[self.anim_tick % 6 // 2
+        if self.velocity.y <= self.speed // 4 else 0], angle)
         self.mask = pygame.mask.from_surface(rotated_surf)
         surface.blit(rotated_surf, self.rect)
 

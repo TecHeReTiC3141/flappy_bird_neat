@@ -58,7 +58,7 @@ class Pipe(GameObject):
         new_pipe: Pipe = None
         if not self.passed and player.rect.centerx >= self.upper_pipe.rect.centerx:
             self.passed = True
-            new_pipe = Pipe(DISP_WIDTH + randint(50, 150), randint(DISP_HEIGHT // 3, DISP_HEIGHT // 2))
+            new_pipe = Pipe(DISP_WIDTH + randint(20, 150), randint(DISP_HEIGHT // 4, DISP_HEIGHT // 2))
         return (new_pipe, self.upper_pipe.interact(player)
                 or self.lower_pipe.interact(player))
 

@@ -26,6 +26,8 @@ class Level:
         self.bird.draw(self.surface)
         if self.game_over:
             self.surface.blit(LEVEL_FONT.render("R", True, 'black'), (DISP_WIDTH // 2, DISP_HEIGHT // 4))
+        self.surface.blit(LEVEL_FONT.render(f"DIST: {self.bird.dist // HOR_SPEED}", True, 'black'), (10, DISP_HEIGHT // 5))
+
         surface.blit(self.surface, (0, 0))
 
     def reload(self):
@@ -54,7 +56,7 @@ class Level:
             self.bird.update()
 
             for obj in self.grounds + self.pipes:
-                obj.update(self.bird.velocity.x)
+                obj.update(HOR_SPEED)
                 if isinstance(obj, Pipe):
                     new_pipe, collided = obj.interact(self.bird)
                     if collided:
@@ -75,4 +77,4 @@ class Level:
                 self.pipes.popleft()
 
             if self.bird.dist >= 150 and not self.pipes:
-                self.pipes.append(Pipe(DISP_WIDTH + randint(50, 150), randint(DISP_HEIGHT // 4, DISP_HEIGHT // 2)))
+                self.pipes.append(Pipe(DISP_WIDTH + randint(20, 150), randint(DISP_HEIGHT // 4, DISP_HEIGHT // 2)))
