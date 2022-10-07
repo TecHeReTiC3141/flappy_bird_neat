@@ -3,6 +3,7 @@ from random import *
 from math import *
 from pathlib import Path
 import neat
+import pickle
 
 pygame.init()
 

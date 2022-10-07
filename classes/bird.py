@@ -11,12 +11,15 @@ class Bird:
         for i in ['down', 'mid', 'up']
     ]
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, genome: neat.DefaultGenome, config):
         # for img in self.images:
         #     img.set_alpha(128)
         self.rect = self.images[0].get_rect(center=(x, y))
         self.anim_tick = 0
-        self.fit = 0
+        self.g = genome
+        self.g.fitness = 0
+        self.net = neat.nn.FeedForwardNetwork.create(genome, config)
+        self.alive = True
         self.velocity = pygame.math.Vector2(self.speed, 0)
         self.acceleration = pygame.math.Vector2(0, self.falling_momentum)
         self.mask = pygame.mask.from_surface(self.images[0])
