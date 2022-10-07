@@ -19,7 +19,6 @@ class GameObject:
         if self.rect.colliderect(player.rect):
             offset = (player.rect.x - self.rect.x, player.rect.y - self.rect.y)
             over = self.mask.overlap_area(player.mask, offset)
-            print(over)
             return over > 0
         return False
 
@@ -56,14 +55,14 @@ class Pipe(GameObject):
         self.upper_pipe.draw(surface)
         self.lower_pipe.draw(surface)
 
-    def interact(self, player: Bird) -> tuple['Pipe', bool]:
+    def interact(self, bird: Bird) -> tuple['Pipe', bool]:
         new_pipe: Pipe = None
-        if not self.passed and player.rect.centerx >= self.upper_pipe.rect.centerx:
+        if not self.passed and bird.rect.centerx >= self.upper_pipe.rect.centerx:
             self.passed = True
-            player.fit += 50
+            bird.g.fitness += 5
             new_pipe = Pipe(DISP_WIDTH + randint(20, 150), randint(DISP_HEIGHT // 4, DISP_HEIGHT // 2))
-        return (new_pipe, self.upper_pipe.interact(player)
-                or self.lower_pipe.interact(player))
+        return (new_pipe, self.upper_pipe.interact(bird)
+                or self.lower_pipe.interact(bird))
 
 
 class Ground(GameObject):

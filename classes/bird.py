@@ -26,7 +26,7 @@ class Bird:
 
     def update(self):
         self.anim_tick += 1
-        self.fit += HOR_SPEED
+        self.g.fitness += .1
         self.rect.move_ip((0, self.velocity.y))
         self.velocity.y = min(self.velocity.y + self.acceleration.y, self.speed * .9)
         self.velocity.x = sqrt(self.speed ** 2 - self.velocity.y ** 2)
