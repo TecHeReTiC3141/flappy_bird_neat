@@ -8,8 +8,9 @@ class Level:
     background_img = pygame.transform.scale(pygame.image.load('sprites/background-day.png'),
                                             (DISP_WIDTH, DISP_HEIGHT))
 
-    def __init__(self, genomes: list, config: neat.config.Config, cur_gen):
-        self.birds: list[Bird] = [Bird(DISP_WIDTH // 2, DISP_HEIGHT // 2, g, config) for _, g in genomes]
+    def __init__(self, genomes: list, config: neat.config.Config, cur_gen, eval=False):
+        self.birds: list[Bird] = [Bird(DISP_WIDTH // 2, DISP_HEIGHT // 2, g, config) for _, g in genomes] if not eval \
+        else [Bird(DISP_WIDTH // 2, DISP_HEIGHT // 2, genomes, config)]
         self.pipes: deque[Pipe] = deque([Pipe(DISP_WIDTH + randint(20, 150),
                                               randint(DISP_HEIGHT // 4, DISP_HEIGHT // 2))])
         self.grounds = deque([Ground(0, GROUND_LEVEL, DISP_WIDTH, DISP_HEIGHT - GROUND_LEVEL),
